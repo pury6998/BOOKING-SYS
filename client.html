@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Client Booking</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <h2>Book a Service</h2>
+
+    <form id="bookingForm">
+        <input id="name" type="text" placeholder="Full Name" required>
+        <input id="email" type="email" placeholder="Email" required>
+        <input id="date" type="date" required>
+
+        <select id="service" required>
+            <option value="">Select Service</option>
+            <option>Consultation</option>
+            <option>Training</option>
+            <option>Meeting</option>
+        </select>
+
+        <button type="submit">Book Now</button>
+    </form>
+
+    <script src="client.js"></script>
+</body>
+
+</html>
