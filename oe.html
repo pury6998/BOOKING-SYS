@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Booking Management</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8fafc;
+      color: #333;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #1e3a8a;
+    }
+    form {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+    button:hover {
+      background: #1e40af;
+    }
+    #message {
+      text-align: center;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+    th {
+      background: #1e3a8a;
+      color: white;
+    }
+    .delete-btn {
+      background: #dc2626;
+      border: none;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .delete-btn:hover {
+      background: #991b1b;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Booking Management Form</h1>
+
+  <form id="bookingForm">
+    <label>Guest Name</label>
+    <input type="text" name="guest_name" required>
+
+    <label>Country</label>
+    <input type="text" name="country" required>
+
+    <label>Phone</label>
+    <input type="text" name="phone" required>
+
+    <label>Email</label>
+    <input type="email" name="email">
+
+    <label>Package</label>
+    <input type="text" name="package">
+
+    <label>Room Type</label>
+    <input type="text" name="room_type">
+
+    <label>Price</label>
+    <input type="number" name="price">
+
+    <label>Arrival Date</label>
+    <input type="date" name="arrival_date">
+
+    <label>Departure Date</label>
+    <input type="date" name="departure_date">
+
+    <label>Remarks</label>
+    <textarea name="remarks"></textarea>
+
+    <label>Booking Code</label>
+    <input type="text" name="booking_code" required>
+
+    <button type="submit">Submit Booking</button>
+    <div id="message"></div>
+  </form>
+
+  <h2>Existing Bookings</h2>
+  <table id="bookingsTable">
+    <thead>
+      <tr>
+        <th>Guest</th>
+        <th>Country</th>
+        <th>Phone</th>
+        <th>Email</th>
+        <th>Package</th>
+        <th>Room</th>
+        <th>Price</th>
+        <th>Arrival</th>
+        <th>Departure</th>
+        <th>Remarks</th>
+        <th>Booking Code</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbx8biJ-E8tb7FWgn7XaUvLqRtIUCtWn8VsWPLMg2sdYn40twjtEJwAvsHC2Qb3qzwfd/exec"
+    const form = document.getElementById("bookingForm");
+    const message = document.getElementById("message");
+    const tableBody = document.querySelector("#bookingsTable tbody");
+
+    // Submit form
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      message.textContent = "Submitting...";
+      const formData = Object.fromEntries(new FormData(form).entries());
+
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          body: JSON.stringify(formData),
+          headers: {"Content-Type": "application/json"}
+        });
+        const text = await res.text();
+        if (text.includes("Success")) {
+          message.style.color = "green";
+          message.textContent = "Booking saved successfully!";
+          form.reset();
+          loadBookings();
+        } else {
+          throw new Error(text);
+        }
+      } catch (err) {
+        message.style.color = "red";
+        message.textContent = "Error: " + err.message;
+      }
+    });
+
+    // Load bookings
+    async function loadBookings() {
+      tableBody.innerHTML = "<tr><td colspan='12'>Loading...</td></tr>";
+      try {
+        const res = await fetch(API_URL);
+        const data = await res.json();
+        if (!Array.isArray(data) || data.length === 0) {
+          tableBody.innerHTML = "<tr><td colspan='12'>No bookings yet.</td></tr>";
+          return;
+        }
+        tableBody.innerHTML = "";
+        data.forEach(row => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${row.guest_name || ""}</td>
+            <td>${row.country || ""}</td>
+            <td>${row.phone || ""}</td>
+            <td>${row.email || ""}</td>
+            <td>${row.package || ""}</td>
+            <td>${row.room_type || ""}</td>
+            <td>${row.price || ""}</td>
+            <td>${row.arrival_date || ""}</td>
+            <td>${row.departure_date || ""}</td>
+            <td>${row.remarks || ""}</td>
+            <td>${row.booking_code || ""}</td>
+            <td><button class="delete-btn" onclick="deleteBooking('${row.booking_code}')">Delete</button></td>
+          `;
+          tableBody.appendChild(tr);
+        });
+      } catch (err) {
+        tableBody.innerHTML = "<tr><td colspan='12' style='color:red'>Failed to fetch data</td></tr>";
+      }
+    }
+
+    // Delete booking
+    async function deleteBooking(code) {
+      if (!confirm(`Delete booking ${code}?`)) return;
+      try {
+        const res = await fetch(API_URL + "?delete=" + encodeURIComponent(code));
+        const text = await res.text();
+        alert(text);
+        loadBookings();
+      } catch (err) {
+        alert("Error deleting: " + err.message);
+      }
+    }
+
+    // Initial load
+    loadBookings();
+  </script>
+
+</body>
+</html>
