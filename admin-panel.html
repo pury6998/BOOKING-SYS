@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sadhana Yoga Retreat - Admin Panel</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="header">
+        <h1>Sadhana Yoga Retreat</h1>
+        <p>Admin Dashboard</p>
+    </div>
+
+    <div id="adminPanel" class="section">
+        <div class="admin-header">
+            <h2>Admin Dashboard</h2>
+            <div>
+                <button onclick="window.location.href='index.html'">Back to Booking</button>
+                <button onclick="logout()" style="margin-left: 10px;">Logout</button>
+            </div>
+        </div>
+
+        <!-- Dashboard Cards -->
+        <div class="dashboard-cards">
+            <div class="dashboard-card card-arriving">
+                <h3>Arriving Today</h3>
+                <div class="number" id="arrivingToday">0</div>
+            </div>
+            <div class="dashboard-card card-departing">
+                <h3>Departing Today</h3>
+                <div class="number" id="departingToday">0</div>
+            </div>
+            <div class="dashboard-card card-weekly">
+                <h3>Total Bookings This Week</h3>
+                <div class="number" id="weeklyBookings">0</div>
+            </div>
+            <div class="dashboard-card card-monthly">
+                <h3>Monthly Estimate</h3>
+                <div class="number" id="monthlyEstimate">$0</div>
+            </div>
+        </div>
+
+        <!-- Arriving Today Table -->
+        <h3>Arriving Today - Client Details</h3>
+        <div class="table-wrap">
+            <table id="arrivingTodayTable">
+                <thead>
+                    <tr>
+                        <th data-sort="guest_name">Guest Name</th>
+                        <th data-sort="package">Package</th>
+                        <th data-sort="whatsapp">WhatsApp</th>
+                        <th data-sort="arrival_date">Arrival Date</th>
+                        <th data-sort="departure_date">Departure Date</th>
+                        <th data-sort="price">Price</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <h3>Upcoming Bookings</h3>
+        <div class="search-container">
+            <input type="text" id="upcomingSearch" placeholder="Search upcoming bookings..." />
+            <button id="clearUpcomingSearch">Clear</button>
+        </div>
+        <div class="table-wrap">
+            <table id="upcomingTable">
+                <thead>
+                    <tr>
+                        <th data-sort="guest_name">Guest Name</th>
+                        <th data-sort="package">Package</th>
+                        <th data-sort="whatsapp">WhatsApp</th>
+                        <th data-sort="arrival_date">Arrival Date</th>
+                        <th data-sort="departure_date">Departure Date</th>
+                        <th data-sort="price">Price</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <h3>All Bookings</h3>
+        <div class="search-container">
+            <input type="text" id="allBookingsSearch" placeholder="Search all bookings..." />
+            <button id="clearAllSearch">Clear</button>
+        </div>
+        <div class="table-wrap">
+            <table id="allBookingsTable">
+                <thead>
+                    <tr>
+                        <th data-sort="guest_name">Guest Name</th>
+                        <th data-sort="package">Package</th>
+                        <th data-sort="whatsapp">WhatsApp</th>
+                        <th data-sort="arrival_date">Arrival Date</th>
+                        <th data-sort="departure_date">Departure Date</th>
+                        <th data-sort="price">Price</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        // Check authentication
+        if (!sessionStorage.getItem('adminAuthenticated')) {
+            window.location.href = 'admin-login.html';
+        }
+
+        function logout() {
+            sessionStorage.removeItem('adminAuthenticated');
+            window.location.href = 'admin-login.html';
+        }
+
+        // Load admin data when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAdminData();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sadhana Yoga Retreat - Admin Login</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="header">
+        <h1>Sadhana Yoga Retreat</h1>
+        <p>Admin Portal</p>
+    </div>
+
+    <div class="section">
+        <h2>Admin Login</h2>
+        <label>Enter PIN</label>
+        <input type="password" id="adminPin" placeholder="Enter admin PIN">
+        <button id="loginAdmin">Login</button>
+        <button onclick="window.location.href='index.html'" style="margin-left: 10px;">Back to Booking</button>
+        
+        <div id="loginMessage" class="status-message hidden"></div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        document.getElementById('loginAdmin').addEventListener('click', function() {
+            const pin = document.getElementById('adminPin').value;
+            const messageDiv = document.getElementById('loginMessage');
+            
+            if (pin === "19981998") {
+                // Store login state and redirect
+                sessionStorage.setItem('adminAuthenticated', 'true');
+                window.location.href = 'admin-panel.html';
+            } else {
+                messageDiv.textContent = "Nice TRY lil bro, only the real ones can access this";
+                messageDiv.className = 'status-message status-error';
+                messageDiv.classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
