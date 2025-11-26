@@ -4,38 +4,171 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sadhana Yoga Retreat - Admin Login</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        :root {
+            --dark-green: #506C4A;
+            --light-green: #8DA399;
+            --background: #F4F1EC;
+            --white: #FFFFFF;
+            --border-radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background);
+            color: #192812;
+            line-height: 1.6;
+            padding: 15px;
+            max-width: 500px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--dark-green) 0%, #3e553c 100%);
+            color: white;
+            border-radius: var(--border-radius);
+        }
+
+        .header h1 {
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .section {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            width: 100%;
+        }
+
+        h2 {
+            color: var(--dark-green);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        label {
+            font-weight: 600;
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            color: var(--dark-green);
+        }
+
+        input {
+            padding: 12px;
+            width: 100%;
+            margin-top: 4px;
+            border: 1px solid #E8E4D9;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--dark-green);
+        }
+
+        button {
+            padding: 12px 24px;
+            margin-top: 20px;
+            cursor: pointer;
+            background-color: var(--dark-green);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #3e553c;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .button-group button {
+            flex: 1;
+        }
+
+        .back-button {
+            background-color: transparent;
+            color: var(--dark-green);
+            border: 2px solid var(--dark-green);
+        }
+
+        .back-button:hover {
+            background-color: rgba(80, 108, 74, 0.1);
+        }
+
+        .error-message {
+            color: #d32f2f;
+            text-align: center;
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(211, 47, 47, 0.1);
+            border-radius: 8px;
+        }
+    </style>
 </head>
 <body>
-    <div class="header">
-        <h1>Sadhana Yoga Retreat</h1>
-        <p>Admin Portal</p>
+    <div style="width: 100%;">
+        <div class="header">
+            <h1>Sadhana Yoga Retreat</h1>
+            <p>Admin Portal</p>
+        </div>
+
+        <div class="section">
+            <h2>Admin Login</h2>
+            <label>Enter PIN</label>
+            <input type="password" id="adminPin" placeholder="Enter admin PIN" autofocus>
+            
+            <button onclick="login()">Login</button>
+            
+            <div class="button-group">
+                <button class="back-button" onclick="window.location.href='index.html'">Back to Booking</button>
+            </div>
+
+            <div id="loginMessage" class="error-message" style="display: none;"></div>
+        </div>
     </div>
 
-    <div class="section">
-        <h2>Admin Login</h2>
-        <label>Enter PIN</label>
-        <input type="password" id="adminPin" placeholder="Enter admin PIN">
-        <button id="loginAdmin">Login</button>
-        <button onclick="window.location.href='index.html'" style="margin-left: 10px;">Back to Booking</button>
-        
-        <div id="loginMessage" class="status-message hidden"></div>
-    </div>
-
-    <script src="app.js"></script>
     <script>
-        document.getElementById('loginAdmin').addEventListener('click', function() {
+        function login() {
             const pin = document.getElementById('adminPin').value;
             const messageDiv = document.getElementById('loginMessage');
             
             if (pin === "19981998") {
-                // Store login state and redirect
                 sessionStorage.setItem('adminAuthenticated', 'true');
                 window.location.href = 'admin-panel.html';
             } else {
                 messageDiv.textContent = "Nice TRY lil bro, only the real ones can access this";
-                messageDiv.className = 'status-message status-error';
-                messageDiv.classList.remove('hidden');
+                messageDiv.style.display = 'block';
+            }
+        }
+
+        // Enter key support
+        document.getElementById('adminPin').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                login();
             }
         });
     </script>

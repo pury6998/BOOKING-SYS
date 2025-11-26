@@ -4,7 +4,194 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sadhana Yoga Retreat - Admin Panel</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        :root {
+            --dark-green: #506C4A;
+            --light-green: #8DA399;
+            --gold: #C9A96E;
+            --text-color: #192812;
+            --background: #F4F1EC;
+            --light-accent: #E8E4D9;
+            --white: #FFFFFF;
+            --border-radius: 12px;
+            --shadow: 0 4px 12px rgba(80, 108, 74, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 15px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1, h2, h3 {
+            color: var(--dark-green);
+            margin-bottom: 1rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--dark-green) 0%, #3e553c 100%);
+            color: white;
+            border-radius: var(--border-radius);
+        }
+
+        .header h1 {
+            color: white;
+        }
+
+        .section {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        button {
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: var(--dark-green);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #3e553c;
+        }
+
+        .logout-btn {
+            background-color: transparent;
+            color: var(--dark-green);
+            border: 2px solid var(--dark-green);
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(80, 108, 74, 0.1);
+        }
+
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            border-top: 4px solid var(--dark-green);
+        }
+
+        .dashboard-card h3 {
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            color: var(--dark-green);
+        }
+
+        .dashboard-card .number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--dark-green);
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            min-width: 700px;
+        }
+
+        th, td {
+            border: 1px solid var(--light-accent);
+            padding: 12px;
+            text-align: center;
+        }
+
+        th {
+            background-color: var(--dark-green);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        tr:nth-child(even) {
+            background-color: rgba(244, 241, 236, 0.5);
+        }
+
+        tr:hover {
+            background-color: rgba(80, 108, 74, 0.05);
+        }
+
+        .search-container {
+            margin: 15px 0;
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-container input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid var(--light-accent);
+            border-radius: var(--border-radius);
+        }
+
+        .whatsapp-link {
+            color: #1a73e8;
+            text-decoration: underline;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .admin-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .dashboard-cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="header">
@@ -12,47 +199,46 @@
         <p>Admin Dashboard</p>
     </div>
 
-    <div id="adminPanel" class="section">
+    <div class="section">
         <div class="admin-header">
             <h2>Admin Dashboard</h2>
-            <div>
+            <div style="display: flex; gap: 10px;">
                 <button onclick="window.location.href='index.html'">Back to Booking</button>
-                <button onclick="logout()" style="margin-left: 10px;">Logout</button>
+                <button class="logout-btn" onclick="logout()">Logout</button>
             </div>
         </div>
 
         <!-- Dashboard Cards -->
         <div class="dashboard-cards">
-            <div class="dashboard-card card-arriving">
+            <div class="dashboard-card">
                 <h3>Arriving Today</h3>
                 <div class="number" id="arrivingToday">0</div>
             </div>
-            <div class="dashboard-card card-departing">
+            <div class="dashboard-card">
                 <h3>Departing Today</h3>
                 <div class="number" id="departingToday">0</div>
             </div>
-            <div class="dashboard-card card-weekly">
-                <h3>Total Bookings This Week</h3>
+            <div class="dashboard-card">
+                <h3>Weekly Bookings</h3>
                 <div class="number" id="weeklyBookings">0</div>
             </div>
-            <div class="dashboard-card card-monthly">
-                <h3>Monthly Estimate</h3>
+            <div class="dashboard-card">
+                <h3>Monthly Revenue</h3>
                 <div class="number" id="monthlyEstimate">$0</div>
             </div>
         </div>
 
-        <!-- Arriving Today Table -->
-        <h3>Arriving Today - Client Details</h3>
+        <h3>Arriving Today</h3>
         <div class="table-wrap">
             <table id="arrivingTodayTable">
                 <thead>
                     <tr>
-                        <th data-sort="guest_name">Guest Name</th>
-                        <th data-sort="package">Package</th>
-                        <th data-sort="whatsapp">WhatsApp</th>
-                        <th data-sort="arrival_date">Arrival Date</th>
-                        <th data-sort="departure_date">Departure Date</th>
-                        <th data-sort="price">Price</th>
+                        <th>Guest Name</th>
+                        <th>Package</th>
+                        <th>WhatsApp</th>
+                        <th>Arrival Date</th>
+                        <th>Departure Date</th>
+                        <th>Price</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -62,18 +248,19 @@
         <h3>Upcoming Bookings</h3>
         <div class="search-container">
             <input type="text" id="upcomingSearch" placeholder="Search upcoming bookings..." />
-            <button id="clearUpcomingSearch">Clear</button>
+            <button onclick="filterTable('upcomingTable', document.getElementById('upcomingSearch').value)">Search</button>
+            <button onclick="clearSearch('upcomingSearch', 'upcomingTable')">Clear</button>
         </div>
         <div class="table-wrap">
             <table id="upcomingTable">
                 <thead>
                     <tr>
-                        <th data-sort="guest_name">Guest Name</th>
-                        <th data-sort="package">Package</th>
-                        <th data-sort="whatsapp">WhatsApp</th>
-                        <th data-sort="arrival_date">Arrival Date</th>
-                        <th data-sort="departure_date">Departure Date</th>
-                        <th data-sort="price">Price</th>
+                        <th>Guest Name</th>
+                        <th>Package</th>
+                        <th>WhatsApp</th>
+                        <th>Arrival Date</th>
+                        <th>Departure Date</th>
+                        <th>Price</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -83,18 +270,19 @@
         <h3>All Bookings</h3>
         <div class="search-container">
             <input type="text" id="allBookingsSearch" placeholder="Search all bookings..." />
-            <button id="clearAllSearch">Clear</button>
+            <button onclick="filterTable('allBookingsTable', document.getElementById('allBookingsSearch').value)">Search</button>
+            <button onclick="clearSearch('allBookingsSearch', 'allBookingsTable')">Clear</button>
         </div>
         <div class="table-wrap">
             <table id="allBookingsTable">
                 <thead>
                     <tr>
-                        <th data-sort="guest_name">Guest Name</th>
-                        <th data-sort="package">Package</th>
-                        <th data-sort="whatsapp">WhatsApp</th>
-                        <th data-sort="arrival_date">Arrival Date</th>
-                        <th data-sort="departure_date">Departure Date</th>
-                        <th data-sort="price">Price</th>
+                        <th>Guest Name</th>
+                        <th>Package</th>
+                        <th>WhatsApp</th>
+                        <th>Arrival Date</th>
+                        <th>Departure Date</th>
+                        <th>Price</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -102,7 +290,6 @@
         </div>
     </div>
 
-    <script src="app.js"></script>
     <script>
         // Check authentication
         if (!sessionStorage.getItem('adminAuthenticated')) {
@@ -114,10 +301,144 @@
             window.location.href = 'admin-login.html';
         }
 
-        // Load admin data when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            loadAdminData();
-        });
+        const scriptURL = "https://script.google.com/macros/s/AKfycbycehH5GfUKtJbB1wmGSCb8Wmx8Z6unUM_OaeKSUh67bH_6obgZgZEF3fkmuIjViy_G/exec";
+
+        // Load data when page loads
+        document.addEventListener('DOMContentLoaded', loadAdminData);
+
+        async function loadAdminData() {
+            try {
+                const response = await fetch(scriptURL);
+                const bookings = await response.json();
+
+                if (Array.isArray(bookings)) {
+                    updateDashboard(bookings);
+                    renderTables(bookings);
+                    setupSearch();
+                }
+            } catch (error) {
+                console.error('Error loading data:', error);
+            }
+        }
+
+        function updateDashboard(bookings) {
+            const today = new Date();
+            today.setHours(0,0,0,0);
+
+            // Arriving today
+            const arrivingToday = bookings.filter(b => {
+                const date = parseDate(b['Arrival Date'] || b['Arrival date'] || b['Arrival date ']);
+                return date && date.getTime() === today.getTime();
+            });
+
+            // Departing today
+            const departingToday = bookings.filter(b => {
+                const date = parseDate(b['Departure Date'] || b['Departure date'] || b['Departure date ']);
+                return date && date.getTime() === today.getTime();
+            });
+
+            // Weekly bookings
+            const nextWeek = new Date(today);
+            nextWeek.setDate(today.getDate() + 7);
+            const weeklyBookings = bookings.filter(b => {
+                const date = parseDate(b['Arrival Date'] || b['Arrival date'] || b['Arrival date ']);
+                return date && date >= today && date <= nextWeek;
+            });
+
+            // Monthly revenue
+            const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+            const monthlyEstimate = bookings
+                .filter(b => {
+                    const date = parseDate(b['Departure Date'] || b['Departure date'] || b['Departure date ']);
+                    return date && date >= firstDayOfMonth && date <= today;
+                })
+                .reduce((total, b) => {
+                    const price = parseFloat((b['Price'] || '0').replace('$', '')) || 0;
+                    return total + price;
+                }, 0);
+
+            document.getElementById('arrivingToday').textContent = arrivingToday.length;
+            document.getElementById('departingToday').textContent = departingToday.length;
+            document.getElementById('weeklyBookings').textContent = weeklyBookings.length;
+            document.getElementById('monthlyEstimate').textContent = '$' + monthlyEstimate;
+
+            // Render arriving today table
+            renderTable('arrivingTodayTable', arrivingToday);
+        }
+
+        function renderTables(bookings) {
+            const now = new Date();
+            
+            // Upcoming bookings
+            const upcoming = bookings
+                .filter(b => {
+                    const date = parseDate(b['Arrival Date'] || b['Arrival date'] || b['Arrival date ']);
+                    return date && date >= now;
+                })
+                .sort((a, b) => {
+                    const dateA = parseDate(a['Arrival Date'] || a['Arrival date'] || a['Arrival date ']);
+                    const dateB = parseDate(b['Arrival Date'] || b['Arrival date'] || b['Arrival date ']);
+                    return dateA - dateB;
+                });
+
+            renderTable('upcomingTable', upcoming);
+            renderTable('allBookingsTable', bookings);
+        }
+
+        function renderTable(tableId, data) {
+            const tbody = document.querySelector(`#${tableId} tbody`);
+            tbody.innerHTML = '';
+
+            data.forEach(b => {
+                const phone = b['Whatsapp/ Phone ( with country code )'] || b['WhatsApp / Phone'] || '';
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${b['Guest Name'] || ''}</td>
+                    <td>${b['Retreat Package'] || ''}</td>
+                    <td>${phone ? `<a class="whatsapp-link" href="${phone}" target="_blank">WhatsApp</a>` : ''}</td>
+                    <td>${formatDate(b['Arrival Date'] || b['Arrival date'] || b['Arrival date '])}</td>
+                    <td>${formatDate(b['Departure Date'] || b['Departure date'] || b['Departure date '])}</td>
+                    <td>${b['Price'] || ''}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function parseDate(dateStr) {
+            if (!dateStr) return null;
+            const date = new Date(dateStr);
+            return isNaN(date.getTime()) ? null : date;
+        }
+
+        function formatDate(dateStr) {
+            const date = parseDate(dateStr);
+            if (!date) return '';
+            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        }
+
+        function setupSearch() {
+            document.getElementById('upcomingSearch').addEventListener('input', function() {
+                filterTable('upcomingTable', this.value);
+            });
+            document.getElementById('allBookingsSearch').addEventListener('input', function() {
+                filterTable('allBookingsTable', this.value);
+            });
+        }
+
+        function filterTable(tableId, searchTerm) {
+            const table = document.getElementById(tableId);
+            const rows = table.querySelectorAll('tbody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm.toLowerCase()) ? '' : 'none';
+            });
+        }
+
+        function clearSearch(inputId, tableId) {
+            document.getElementById(inputId).value = '';
+            filterTable(tableId, '');
+        }
     </script>
 </body>
 </html>
