@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retreat Booking System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-bg: #f5f7fa;
+            --primary-text: #1d1d1f;
+            --secondary-text: #6e6e73;
+            --accent-color: #007AFF;
+            --success: #34C759;
+            --warning: #FF9500;
+            --danger: #FF3B30;
+            --card-bg: #ffffff;
+            --border-color: #e5e5e7;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            background: var(--primary-bg);
+            color: var(--primary-text);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 20px;
+        }
+
+        h1 {
+            color: var(--primary-text);
+            margin-bottom: 8px;
+            font-size: 2.8rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            color: var(--secondary-text);
+            font-size: 1.2rem;
+            font-weight: 400;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 18px;
+            padding: 28px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        .card h2 {
+            color: var(--primary-text);
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--primary-text);
+            font-size: 0.95rem;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 16px;
+            background: var(--primary-bg);
+            color: var(--primary-text);
+            transition: border 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .btn {
+            padding: 14px 22px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0056CC;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .price-display {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-text);
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 18px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            color: var(--danger);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--secondary-text);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 16px 24px;
+            background: var(--success);
+            color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 1001;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.error {
+            background: var(--danger);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: var(--secondary-text);
+            font-size: 0.9rem;
+        }
+
+        .booking-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .booking-form {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .date-info {
+            background: var(--card-bg);
+            padding: 24px;
+            border-radius: 18px;
+            margin-top: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+        
+        .date-info h3 {
+            color: var(--primary-text);
+            margin-bottom: 16px;
+            font-size: 1.3rem;
+        }
+        
+        .date-info p {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .error-message {
+            color: var(--danger);
+            font-weight: 500;
+            text-align: center;
+            margin-top: 16px;
+            padding: 16px;
+            background: rgba(255, 59, 48, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 59, 48, 0.2);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            background: var(--card-bg);
+            padding: 20px 28px;
+            border-radius: 18px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .calendar-controls {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .calendar-controls button {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .calendar-controls button:hover {
+            background: #0056CC;
+        }
+
+        #month-year {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-text);
+        }
+
+        #calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            background: var(--card-bg);
+            padding: 24px;
+            border-radius: 18px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            padding: 12px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .calendar-day:hover {
+            background: rgba(0, 122, 255, 0.05);
+            border-color: var(--accent-color);
+        }
+
+        .calendar-day.empty {
+            background: transparent;
+            border: none;
+            cursor: default;
+        }
+
+        .calendar-day.empty:hover {
+            background: transparent;
+        }
+
+        .day-number {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .event-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--danger);
+            margin: 0 auto;
+        }
+
+        .calendar-day.blocked {
+            background: rgba(255, 59, 48, 0.1);
+            color: var(--danger);
+            font-weight: bold;
+            border-color: rgba(255, 59, 48, 0.3);
+        }
+
+        .calendar-day.start-date {
+            background: var(--success);
+            color: white;
+            font-weight: bold;
+        }
+
+        .calendar-day.end-date {
+            background: var(--success);
+            color: white;
+            font-weight: bold;
+        }
+
+        .calendar-day.in-range {
+            background: rgba(52, 199, 89, 0.1);
+            color: var(--success);
+            font-weight: bold;
+        }
+
+        .date-label {
+            font-size: 9px;
+            font-weight: bold;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--primary-text);
+            padding: 2px;
+            border-radius: 3px;
+            margin-top: 3px;
+        }
+
+        .weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            margin-bottom: 8px;
+            padding: 0 24px;
+        }
+
+        .weekday {
+            text-align: center;
+            font-weight: 600;
+            color: var(--secondary-text);
+            padding: 8px;
+            font-size: 0.9rem;
+        }
+
+        
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Retreat Booking System</h1>
+            <p class="subtitle">Book your perfect yoga retreat</p>
+        </header>
+
+        <div class="card">
+            <h2><i class="fas fa-calendar-check"></i> Book a Retreat</h2>
+            <div class="booking-form">
+                <div class="form-group">
+                    <label for="retreatSelect">Select Retreat</label>
+                    <select id="retreatSelect">
+                        <option value="">-- Choose a retreat --</option>
+                        <option value="Silent Yoga Retreat 6D/6N">Silent Yoga Retreat 6D/6N</option>
+                        <option value="Yoga and Ayurvedic Massage 2D/2N">Yoga and Ayurvedic Massage 2D/2N</option>
+                        <option value="Introductory Hatha Yoga 4D/4N">Introductory Hatha Yoga 4D/4N</option>
+                        <option value="Yogic Cleansing and Stretching 2D/2N">Yogic Cleansing and Stretching 2D/2N</option>
+                        <option value="One-Day Yoga and Meditation 1DAY">One-Day Yoga and Meditation 1DAY</option>
+                        <option value="Fasting and Gastro-Cleansing 7D/7N">Fasting and Gastro-Cleansing 7D/7N</option>
+                        <option value="Yoga and Juice Fasting 4D/4N">Yoga and Juice Fasting 4D/4N</option>
+                        <option value="Silent Detox Retreat in Nepal 6D/6N">Silent Detox Retreat in Nepal 6D/6N</option>
+                        <option value="Standard Hatha Yoga 7D/7N">Standard Hatha Yoga 7D/7N</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="roomSelect">Room Type</label>
+                    <select id="roomSelect">
+                        <option value="">-- Select room type --</option>
+                        <option value="Private">Private</option>
+                        <option value="Double">Double</option>
+                        <option value="Dormitory">Dormitory</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="price-display" id="priceDisplay">$0</div>
+
+            <button class="btn btn-primary" onclick="checkBooking()" style="width: 100%; margin-top: 20px;">
+                <i class="fas fa-check-circle"></i> Check Availability & Book
+            </button>
+        </div>
+
+        <div class="calendar-section">
+            <div class="calendar-header">
+                <div class="calendar-controls">
+                    <button onclick="prevMonth()"><i class="fas fa-chevron-left"></i></button>
+                    <span id="month-year">January 2023</span>
+                    <button onclick="nextMonth()"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                <div>
+                    <span>Selected: <strong id="selectedRetreat">None</strong></span>
+                </div>
+            </div>
+            
+            <div class="weekdays">
+                <div class="weekday">Sun</div>
+                <div class="weekday">Mon</div>
+                <div class="weekday">Tue</div>
+                <div class="weekday">Wed</div>
+                <div class="weekday">Thu</div>
+                <div class="weekday">Fri</div>
+                <div class="weekday">Sat</div>
+            </div>
+            
+            <div id="calendar"></div>
+            
+            <div class="date-info hidden" id="dateInfo">
+                <h3>Your Retreat Schedule</h3>
+                <p>Your retreat starts on: <strong id="startDateDisplay">Not selected</strong></p>
+                <p>Your retreat ends on: <strong id="endDateDisplay">Not selected</strong></p>
+                <p>Check-in: 11am after breakfast</p>
+            </div>
+            
+            <div class="error-message hidden" id="dateError">
+                <!-- Error message will be displayed here -->
+            </div>
+        </div>
+
+       
+            
+        </div>
+
+        <footer>
+            <p>Retreat Booking System &copy; 2025 | All rights reserved</p>
+        </footer>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" style="color: var(--success);"><i class="fas fa-check-circle"></i> BOOKING SUCCESSFUL</h3>
+                <button class="close-modal" onclick="closeSuccessModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size: 1.2rem; text-align: center;">
+                    Your retreat has been successfully booked!
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success" onclick="closeSuccessModal()">Great!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div class="modal" id="errorModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-exclamation-circle"></i> DATE CONFLICT</h3>
+                <button class="close-modal" onclick="closeErrorModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="errorModalMessage" style="font-size: 1.1rem; text-align: center; line-height: 1.5;">
+                    <!-- Error message will be inserted here -->
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="closeErrorModal()">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Blocked Date Info Modal -->
+    <div class="modal" id="blockedInfoModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-calendar-times"></i> BLOCKED DATE</h3>
+                <button class="close-modal" onclick="closeBlockedInfoModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="blockedInfoMessage" style="font-size: 1.1rem; text-align: center; line-height: 1.5;">
+                    <!-- Blocked date info will be inserted here -->
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="closeBlockedInfoModal()">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Operation completed successfully!</span>
+    </div>
+
+    <script>
+        const API = "https://script.google.com/macros/s/AKfycbykBLoTipqGHregVixPiGFm1yLMiUiwj-fEMMYOCbmYA8GeNSk0dCCiI9ts6U0WyJoMkg/exec";
+
+        // Pricing and duration data
+        const pricing = {
+            "Silent Yoga Retreat 6D/6N": { "Private": 479 },
+            "Yoga and Ayurvedic Massage 2D/2N": { "Private": 179, "Double": 149, "Dormitory": 119 },
+            "Introductory Hatha Yoga 4D/4N": { "Private": 319, "Double": 259, "Dormitory": 199 },
+            "Yogic Cleansing and Stretching 2D/2N": { "Private": 159, "Double": 129, "Dormitory": 99 },
+            "One-Day Yoga and Meditation 1DAY": { "Dormitory": 79 },
+            "Fasting and Gastro-Cleansing 7D/7N": { "Private": 559, "Double": 455, "Dormitory": 349 },
+            "Yoga and Juice Fasting 4D/4N": { "Private": 319, "Double": 259, "Dormitory": 199 },
+            "Silent Detox Retreat in Nepal 6D/6N": { "Private": 479, "Double": 389 },
+            "Standard Hatha Yoga 7D/7N": { "Private": 559, "Double": 455, "Dormitory": 349 }
+        };
+
+        const retreatDuration = {
+            "Silent Yoga Retreat 6D/6N": 6,
+            "Yoga and Ayurvedic Massage 2D/2N": 2,
+            "Introductory Hatha Yoga 4D/4N": 4,
+            "Yogic Cleansing and Stretching 2D/2N": 2,
+            "One-Day Yoga and Meditation 1DAY": 1,
+            "Fasting and Gastro-Cleansing 7D/7N": 7,
+            "Yoga and Juice Fasting 4D/4N": 4,
+            "Silent Detox Retreat in Nepal 6D/6N": 6,
+            "Standard Hatha Yoga 7D/7N": 7
+        };
+
+        // State variables
+        let currentYear = new Date().getFullYear();
+        let currentMonth = new Date().getMonth();
+        let blockedDates = [];
+        let selectedStartDate = null;
+        let selectedEndDate = null;
+
+        // Initialize the application
+        window.onload = () => {
+            fetchBlocks();
+            renderCalendar(currentYear, currentMonth);
+
+            // Add event listeners
+            document.getElementById('retreatSelect').addEventListener('change', updateRetreatSelection);
+            document.getElementById('roomSelect').addEventListener('change', updatePrice);
+        };
+
+        // Update retreat selection
+        function updateRetreatSelection() {
+            const retreatSelect = document.getElementById('retreatSelect');
+            const selectedRetreat = retreatSelect.value;
+            document.getElementById('selectedRetreat').textContent = selectedRetreat || 'None';
+            updatePrice();
+            
+            // Clear any previous selection when retreat changes
+            selectedStartDate = null;
+            selectedEndDate = null;
+            document.getElementById('dateInfo').classList.add('hidden');
+            document.getElementById('dateError').classList.add('hidden');
+            renderCalendar(currentYear, currentMonth);
+        }
+
+        // Update price based on retreat and room selection
+        function updatePrice() {
+            const retreat = document.getElementById('retreatSelect').value;
+            const room = document.getElementById('roomSelect').value;
+
+            if (pricing[retreat] && pricing[retreat][room]) {
+                const price = pricing[retreat][room];
+                document.getElementById('priceDisplay').textContent = "$" + price;
+            } else {
+                document.getElementById('priceDisplay').textContent = "$0";
+            }
+        }
+
+        // Check booking for conflicts
+        function checkBooking() {
+            const retreat = document.getElementById('retreatSelect').value;
+            const room = document.getElementById('roomSelect').value;
+
+            // Validate inputs
+            if (!retreat) {
+                showToast('Please select a retreat', true);
+                return;
+            }
+
+            if (!room) {
+                showToast('Please select a room type', true);
+                return;
+            }
+
+            if (!selectedStartDate) {
+                showToast('Please select a start date from the calendar', true);
+                return;
+            }
+
+            // If no conflicts, show success
+            showSuccessModal();
+        }
+
+        // Check if date range conflicts with blocked dates
+        function checkDateRangeConflict(startDate, endDate) {
+            const current = new Date(startDate);
+            const conflicts = [];
+
+            while (current <= endDate) {
+                const dateStr = current.toISOString().split('T')[0];
+                const blockedDate = blockedDates.find(b => b.date === dateStr);
+
+                if (blockedDate) {
+                    conflicts.push({
+                        date: dateStr,
+                        reason: blockedDate.reason
+                    });
+                }
+                current.setDate(current.getDate() + 1);
+            }
+            
+            return conflicts.length > 0 ? conflicts : null;
+        }
+
+        // Fetch blocked dates from API
+        function fetchBlocks() {
+            fetch(API)
+            .then(r => r.json())
+            .then(data => {
+                updateBlockedDates(data);
+            });
+        }
+
+        // Update blocked dates
+        function updateBlockedDates(data) {
+            blockedDates = [];
+            data.forEach(row => {
+                if (row.Start && row.End) {
+                    let start = new Date(row.Start);
+                    let end = new Date(row.End);
+                    const reason = row.Reason;
+
+                    while (start <= end) {
+                        const dateStr = start.toISOString().split("T")[0];
+                        blockedDates.push({ date: dateStr, reason: reason });
+                        start.setDate(start.getDate() + 1);
+                    }
+                }
+            });
+            renderCalendar(currentYear, currentMonth);
+        }
+
+        // Calendar functions
+        function renderCalendar(year, month) {
+            const monthName = new Date(year, month).toLocaleString("default", { month: "long" });
+            document.getElementById("month-year").innerText = `${monthName} ${year}`;
+
+            const calendar = document.getElementById("calendar");
+            calendar.innerHTML = "";
+
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            // Empty boxes before first day
+            for (let i = 0; i < firstDay; i++) {
+                calendar.innerHTML += `<div class="calendar-day empty"></div>`;
+            }
+
+            // Fill days
+            for (let day = 1; day <= daysInMonth; day++) {
+                let dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const blockedDate = blockedDates.find(b => b.date === dateStr);
+                const isBlocked = !!blockedDate;
+
+                let dayClass = "calendar-day";
+                let dateLabelHtml = "";
+
+                if (isBlocked) {
+                    dayClass += " blocked";
+                }
+
+                // Check if this date is in the selected booking range
+                const currentDate = new Date(dateStr);
+                if (selectedStartDate && selectedEndDate) {
+                    if (currentDate.getTime() === selectedStartDate.getTime()) {
+                        dayClass += " start-date";
+                        dateLabelHtml = `<div class="date-label">ARRIVAL</div>`;
+                    } else if (currentDate.getTime() === selectedEndDate.getTime()) {
+                        dayClass += " end-date";
+                        dateLabelHtml = `<div class="date-label">DEPARTURE 11AM</div>`;
+                    } else if (currentDate > selectedStartDate && currentDate < selectedEndDate) {
+                        dayClass += " in-range";
+                    }
+                }
+
+                calendar.innerHTML += `
+                    <div class="${dayClass}" data-date="${dateStr}" onclick="selectDate('${dateStr}')">
+                        <div class="day-number">${day}</div>
+                        <div class="day-events">
+                            ${isBlocked ? '<div class="event-dot"></div>' : ''}
+                        </div>
+                        ${dateLabelHtml}
+                    </div>
+                `;
+            }
+        }
+
+        function selectDate(dateStr) {
+            const retreat = document.getElementById('retreatSelect').value;
+            if (!retreat) {
+                showToast('Please select a retreat first', true);
+                return;
+            }
+
+            // Check if the selected date is blocked
+            const blockedDate = blockedDates.find(b => b.date === dateStr);
+            if (blockedDate) {
+                // Show blocked date info modal
+                document.getElementById('blockedInfoMessage').innerHTML = 
+                    `The date <strong>${formatDate(dateStr)}</strong> is blocked.<br><br>
+                    <strong>Reason:</strong> ${blockedDate.reason}`;
+                document.getElementById('blockedInfoModal').style.display = 'flex';
+                return;
+            }
+
+            const date = new Date(dateStr);
+            const nights = retreatDuration[retreat];
+            
+            // Calculate end date (start date + nights)
+            selectedStartDate = date;
+            selectedEndDate = new Date(date);
+            selectedEndDate.setDate(date.getDate() + nights);
+            
+            // Check for conflicts with blocked dates
+            const conflicts = checkDateRangeConflict(selectedStartDate, selectedEndDate);
+            
+            if (conflicts) {
+                // Show error modal with details
+                let errorMessage = "Sorry, the selected dates overlap with blocked dates:<br><br>";
+                conflicts.forEach(conflict => {
+                    errorMessage += `• <strong>${formatDate(conflict.date)}</strong>: ${conflict.reason}<br>`;
+                });
+                
+                document.getElementById('errorModalMessage').innerHTML = errorMessage;
+                document.getElementById('errorModal').style.display = 'flex';
+                
+                // Clear the selection
+                selectedStartDate = null;
+                selectedEndDate = null;
+                renderCalendar(currentYear, currentMonth);
+                return;
+            }
+            
+            // If no conflicts, proceed with selection
+            document.getElementById('dateError').classList.add('hidden');
+            
+            // Update date info display
+            document.getElementById('startDateDisplay').textContent = formatDate(dateStr);
+            document.getElementById('endDateDisplay').textContent = formatDate(selectedEndDate.toISOString().split('T')[0]);
+            document.getElementById('dateInfo').classList.remove('hidden');
+            
+            renderCalendar(currentYear, currentMonth);
+        }
+
+        function prevMonth() {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            renderCalendar(currentYear, currentMonth);
+        }
+
+        function nextMonth() {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            renderCalendar(currentYear, currentMonth);
+        }
+
+        // UI Utilities
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+
+            toastMessage.textContent = message;
+            toast.className = isError ? 'toast error show' : 'toast show';
+
+            setTimeout(() => {
+                toast.className = 'toast';
+            }, 3000);
+        }
+
+        function showSuccessModal() {
+            document.getElementById('successModal').style.display = 'flex';
+        }
+
+        function closeSuccessModal() {
+            document.getElementById('successModal').style.display = 'none';
+        }
+
+        function closeErrorModal() {
+            document.getElementById('errorModal').style.display = 'none';
+        }
+
+        function closeBlockedInfoModal() {
+            document.getElementById('blockedInfoModal').style.display = 'none';
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+    </script>
+</body>
+</html>

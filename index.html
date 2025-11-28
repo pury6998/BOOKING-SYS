@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sadhana Yoga Retreat - Booking</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --dark-green: #506C4A;
@@ -15,6 +17,9 @@
             --white: #FFFFFF;
             --border-radius: 12px;
             --shadow: 0 4px 12px rgba(80, 108, 74, 0.08);
+            --danger: #FF3B30;
+            --success: #34C759;
+            --warning: #FF9500;
             --transition: all 0.3s ease;
         }
 
@@ -22,19 +27,24 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
             background-color: var(--background);
             color: var(--text-color);
             line-height: 1.6;
             padding: 15px;
             max-width: 1200px;
             margin: 0 auto;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
-        h1, h2, h3 {
+        h1,
+        h2,
+        h3 {
             color: var(--dark-green);
             margin-bottom: 1rem;
         }
@@ -61,8 +71,10 @@
             color: var(--dark-green);
         }
 
-        input, select, textarea {
-            padding: 12px;
+        input,
+        select,
+        textarea {
+            padding: 14px;
             width: 100%;
             margin-top: 4px;
             border: 1px solid var(--light-accent);
@@ -70,16 +82,20 @@
             background-color: var(--white);
             font-size: 16px;
             transition: var(--transition);
+            -webkit-appearance: none;
+            appearance: none;
         }
 
-        input:focus, select:focus, textarea:focus {
+        input:focus,
+        select:focus,
+        textarea:focus {
             outline: none;
             border-color: var(--dark-green);
             box-shadow: 0 0 0 2px rgba(80, 108, 74, 0.2);
         }
 
         button {
-            padding: 12px 24px;
+            padding: 16px 24px;
             margin-top: 15px;
             cursor: pointer;
             background-color: var(--dark-green);
@@ -89,6 +105,7 @@
             font-weight: 600;
             font-size: 16px;
             transition: var(--transition);
+            width: 100%;
         }
 
         button:hover {
@@ -107,7 +124,7 @@
 
         .header h1 {
             color: white;
-            font-size: 2.2rem;
+            font-size: 1.8rem;
             margin-bottom: 10px;
         }
 
@@ -172,15 +189,395 @@
             background-color: rgba(80, 108, 74, 0.1);
         }
 
+        /* Calendar Styles */
+        .calendar-section {
+            margin: 25px 0;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            background: var(--white);
+            padding: 15px 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .calendar-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .calendar-controls button {
+            background: var(--dark-green);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            margin: 0;
+            padding: 0;
+        }
+
+        .calendar-controls button:hover {
+            background: #3e553c;
+        }
+
+        #month-year {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--dark-green);
+        }
+
+        #calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+            background: var(--white);
+            padding: 15px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            padding: 8px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border: 1px solid var(--light-accent);
+            transition: all 0.2s ease;
+            cursor: pointer;
+            position: relative;
+            font-size: 14px;
+        }
+
+        .calendar-day:hover {
+            background: rgba(80, 108, 74, 0.05);
+            border-color: var(--dark-green);
+        }
+
+        .calendar-day.empty {
+            background: transparent;
+            border: none;
+            cursor: default;
+        }
+
+        .calendar-day.empty:hover {
+            background: transparent;
+        }
+
+        .day-number {
+            font-weight: 600;
+        }
+
+        .event-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--danger);
+            margin: 0 auto;
+        }
+
+        .calendar-day.blocked {
+            background: rgba(255, 59, 48, 0.1);
+            color: var(--danger);
+            font-weight: bold;
+            border-color: rgba(255, 59, 48, 0.3);
+        }
+
+        .calendar-day.start-date {
+            background: var(--success);
+            color: white;
+            font-weight: bold;
+        }
+
+        .calendar-day.end-date {
+            background: var(--success);
+            color: white;
+            font-weight: bold;
+        }
+
+        .calendar-day.in-range {
+            background: rgba(52, 199, 89, 0.1);
+            color: var(--success);
+            font-weight: bold;
+        }
+
+        .date-label {
+            font-size: 8px;
+            font-weight: bold;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--text-color);
+            padding: 1px 3px;
+            border-radius: 3px;
+            margin-top: 2px;
+        }
+
+        .weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+            margin-bottom: 8px;
+            padding: 0 15px;
+        }
+
+        .weekday {
+            text-align: center;
+            font-weight: 600;
+            color: var(--dark-green);
+            padding: 8px;
+            font-size: 0.8rem;
+        }
+
+        .date-info {
+            background: var(--white);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            margin-top: 20px;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .date-info h3 {
+            color: var(--dark-green);
+            margin-bottom: 15px;
+        }
+
+        .date-info p {
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .error-message {
+            color: var(--danger);
+            font-weight: 500;
+            text-align: center;
+            margin-top: 16px;
+            padding: 16px;
+            background: rgba(255, 59, 48, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 59, 48, 0.2);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: var(--white);
+            padding: 25px;
+            border-radius: var(--border-radius);
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 2px solid var(--dark-green);
+            text-align: center;
+        }
+
+        .modal-title {
+            font-size: 1.4rem;
+            color: var(--success);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .modal-buttons button {
+            flex: 1;
+            min-width: 120px;
+            margin: 0;
+        }
+
+        .whatsapp-btn {
+            background: #25D366 !important;
+        }
+
+        .whatsapp-btn:hover {
+            background: #128C7E !important;
+        }
+
+        .terms-container {
+            background: rgba(80, 108, 74, 0.05);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            margin: 20px 0;
+            border: 1px solid var(--light-accent);
+        }
+
+        .terms-content {
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 15px;
+            background: var(--white);
+            border-radius: var(--border-radius);
+            margin-bottom: 15px;
+            text-align: left;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .terms-checkbox {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .terms-checkbox input {
+            width: 18px;
+            margin-top: 3px;
+        }
+
+        .terms-checkbox label {
+            margin: 0;
+            font-weight: normal;
+            text-align: left;
+        }
+
+        /* Mobile Optimizations */
         @media (max-width: 768px) {
-            body { padding: 10px; }
-            .retreat-card { flex-direction: column; }
-            .header h1 { font-size: 1.8rem; }
-            .phone-container { flex-direction: column; }
-            .country-code { width: 100%; }
+            body {
+                padding: 10px;
+                font-size: 15px;
+            }
+
+            .retreat-card {
+                flex-direction: column;
+            }
+
+            .header h1 {
+                font-size: 1.6rem;
+            }
+
+            .phone-container {
+                flex-direction: column;
+            }
+
+            .country-code {
+                width: 100%;
+            }
+
+            .calendar-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .calendar-controls {
+                justify-content: center;
+            }
+
+            #month-year {
+                font-size: 1.1rem;
+            }
+
+            .calendar-day {
+                padding: 4px;
+                font-size: 13px;
+            }
+
+            .date-label {
+                font-size: 7px;
+            }
+
+            .modal-content {
+                padding: 20px 15px;
+            }
+
+            input,
+            select,
+            textarea {
+                padding: 16px;
+                font-size: 16px;
+                /* Prevents iOS zoom */
+            }
+
+            button {
+                padding: 18px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.4rem;
+            }
+
+            .weekday {
+                font-size: 0.7rem;
+                padding: 4px;
+            }
+
+            .calendar-day {
+                font-size: 12px;
+            }
+
+            .section {
+                padding: 15px;
+            }
+
+            .price-display {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* iOS specific fixes */
+        @supports (-webkit-touch-callout: none) {
+
+            input,
+            select,
+            textarea {
+                font-size: 16px;
+                /* Prevent zoom on focus */
+            }
+        }
+
+        /* Samsung and Android specific fixes */
+        @media (-webkit-device-pixel-ratio: 2) {
+            .calendar-day {
+                font-weight: 500;
+                /* Better readability on high DPI screens */
+            }
         }
     </style>
 </head>
+
 <body>
     <div class="header">
         <h1>Sadhana Yoga Retreat</h1>
@@ -193,7 +590,8 @@
         <div class="retreat-card">
             <div class="retreat-info">
                 <h3>Important Information</h3>
-                <p>Arrival is on 3 PM. This will be on Sadhana's booking calendar, so confirm first before filling the information.</p>
+                <p>Arrival is on 3 PM. This will be on Sadhana's booking calendar, so confirm first before filling the
+                    information.</p>
                 <ul style="margin-top: 15px; padding-left: 20px;">
                     <li>Check-in: 3 PM on arrival day</li>
                     <li>Check-out: 11 AM after breakfast on departure day</li>
@@ -221,8 +619,15 @@
                             <option value="355">+355 (Albania)</option>
                             <option value="213">+213 (Algeria)</option>
                             <option value="376">+376 (Andorra)</option>
+                            <option value="244">+244 (Angola)</option>
+                            <option value="977">+977 (Nepal)</option>
+                            <option value="91">+91 (India)</option>
+                            <option value="86">+86 (China)</option>
+                            <option value="1">+1 (USA/Canada)</option>
+                            <option value="44">+44 (UK)</option>
+                            <option value="61">+61 (Australia)</option>
                         </select>
-                        <input type="text" class="phone-number" id="phoneNumber" required placeholder="Phone number">
+                        <input type="tel" class="phone-number" id="phoneNumber" required placeholder="Phone number">
                     </div>
                     <input type="hidden" id="phone" name="phone">
 
@@ -232,7 +637,8 @@
                         <option value="Silent Yoga Retreat 6D/6N">Silent Yoga Retreat 6D/6N</option>
                         <option value="Yoga and Ayurvedic Massage 2D/2N">Yoga and Ayurvedic Massage 2D/2N</option>
                         <option value="Introductory Hatha Yoga 4D/4N">Introductory Hatha Yoga 4D/4N</option>
-                        <option value="Yogic Cleansing and Stretching 2D/2N">Yogic Cleansing and Stretching 2D/2N</option>
+                        <option value="Yogic Cleansing and Stretching 2D/2N">Yogic Cleansing and Stretching 2D/2N
+                        </option>
                         <option value="One-Day Yoga and Meditation 1DAY">One-Day Yoga and Meditation 1DAY</option>
                         <option value="Fasting and Gastro-Cleansing 7D/7N">Fasting and Gastro-Cleansing 7D/7N</option>
                         <option value="Yoga and Juice Fasting 4D/4N">Yoga and Juice Fasting 4D/4N</option>
@@ -249,28 +655,156 @@
                     <div class="price-display" id="priceDisplay">$0</div>
                     <input type="hidden" id="price" name="price">
 
-                    <label>Arrival Date</label>
-                    <input type="date" name="arrival_date" required>
+                    <!-- Calendar Section -->
+                    <div class="calendar-section">
+                        <label>Select Your Arrival Date</label>
+                        <div class="calendar-header">
+                            <div class="calendar-controls">
+                                <button type="button" onclick="prevMonth()"><i class="fas fa-chevron-left"></i></button>
+                                <span id="month-year">January 2024</span>
+                                <button type="button" onclick="nextMonth()"><i
+                                        class="fas fa-chevron-right"></i></button>
+                            </div>
+                            <div>
+                                <span>Selected: <strong id="selectedRetreat">None</strong></span>
+                            </div>
+                        </div>
 
-                    <label>Departure Date</label>
-                    <input type="date" name="departure_date" readonly>
-                    <div class="departure-note">Check-out at 11 AM after breakfast</div>
+                        <div class="weekdays">
+                            <div class="weekday">Sun</div>
+                            <div class="weekday">Mon</div>
+                            <div class="weekday">Tue</div>
+                            <div class="weekday">Wed</div>
+                            <div class="weekday">Thu</div>
+                            <div class="weekday">Fri</div>
+                            <div class="weekday">Sat</div>
+                        </div>
+
+                        <div id="calendar"></div>
+
+                        <div class="date-info hidden" id="dateInfo">
+                            <h3>Your Retreat Schedule</h3>
+                            <p>Your retreat starts on: <strong id="startDateDisplay">Not selected</strong></p>
+                            <p>Your retreat ends on: <strong id="endDateDisplay">Not selected</strong></p>
+                            <p>Check-in: 3 PM on arrival day</p>
+                            <p>Check-out: 11 AM after breakfast</p>
+                        </div>
+
+                        <div class="error-message hidden" id="dateError"></div>
+                    </div>
 
                     <label>Remarks</label>
-                    <textarea name="remarks" rows="3" placeholder="Any special requests or dietary requirements"></textarea>
+                    <textarea name="remarks" rows="3"
+                        placeholder="Any special requests or dietary requirements"></textarea>
 
-                    <button type="submit">Submit Booking</button>
+                    <!-- Terms and Conditions -->
+                    <div class="terms-container">
+                        <h3>Terms & Conditions</h3>
+                        <div class="terms-content">
+                            <p><strong>Booking Policy:</strong></p>
+                            <ul style="margin-left: 20px; margin-bottom: 15px;">
+                                <li>Full payment is required to confirm your booking</li>
+                                <li>If a prepaid booking is cancelled, 30% of the total paid amount will be deducted
+                                </li>
+                                <li>Bookings with no upfront payment may be cancelled by Sadhana Yoga up to 2 days
+                                    before arrival, in case of any inconvenience at the retreat</li>
+                                <li>In all cases, guests will be informed promptly about any changes or cancellations
+                                </li>
+                            </ul>
+
+                            <p><strong>Retreat Guidelines:</strong></p>
+                            <ul style="margin-left: 20px; margin-bottom: 15px;">
+                                <li>Please maintain silence in meditation areas</li>
+                                <li>Vegetarian meals only served at the retreat</li>
+                                <li>Alcohol and non-prescription drugs are prohibited</li>
+                                <li>Respect the peaceful environment for all guests</li>
+                            </ul>
+
+                            <p><strong>Health & Safety:</strong></p>
+                            <ul style="margin-left: 20px;">
+                                <li>Inform us of any medical conditions or dietary restrictions</li>
+                                <li>COVID-19 safety protocols are followed as per government guidelines</li>
+                                <li>Travel insurance is recommended for all guests</li>
+                            </ul>
+                        </div>
+
+                        <div class="terms-checkbox">
+                            <input type="checkbox" id="agreeTerms" required>
+                            <label for="agreeTerms">I have read and agree to the Terms & Conditions</label>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="submitBtn">
+                        <i class="fas fa-check-circle"></i> Submit Booking
+                    </button>
                 </form>
             </div>
         </div>
 
-        <button id="adminBtn" onclick="window.location.href='admin-login.html'">ADMIN ACCESS</button>
+        <button id="adminBtn" type="button" onclick="window.location.href='admin-login.html'">
+            <i class="fas fa-lock"></i> ADMIN ACCESS
+        </button>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <h3 class="modal-title">
+                <i class="fas fa-check-circle"></i> BOOKING CONFIRMED!
+            </h3>
+            <p style="margin-bottom: 15px; font-size: 1.1rem;">
+                Your booking has been successfully submitted!
+            </p>
+            <p style="margin-bottom: 10px; color: var(--dark-green);">
+                <i class="fas fa-download"></i> Your booking confirmation has been automatically downloaded.
+            </p>
+            <p style="margin-bottom: 15px; font-size: 0.9rem; color: #666;">
+                If the download didn't start,
+                <a href="#" id="manualDownload" style="color: var(--dark-green); font-weight: bold;">click here to
+                    download</a>
+            </p>
+            <p
+                style="margin-bottom: 20px; padding: 15px; background: rgba(37, 211, 102, 0.1); border-radius: var(--border-radius); border: 1px solid rgba(37, 211, 102, 0.3);">
+                <strong>Please send this slip in WhatsApp for confirmation</strong>
+            </p>
+            <div class="modal-buttons">
+                <button type="button" class="whatsapp-btn" onclick="sendWhatsApp()">
+                    <i class="fab fa-whatsapp"></i> Send on WhatsApp
+                </button>
+                <button type="button" class="btn-primary" onclick="closeSuccessModal()">
+                    <i class="fas fa-home"></i> Back to Home
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div class="modal" id="errorModal">
+        <div class="modal-content">
+            <h3 class="modal-title" style="color: var(--danger);">
+                <i class="fas fa-exclamation-circle"></i> DATE CONFLICT
+            </h3>
+            <p id="errorModalMessage" style="margin-bottom: 20px; font-size: 1.1rem; line-height: 1.5;"></p>
+            <button type="button" class="btn-primary" onclick="closeErrorModal()">OK</button>
+        </div>
+    </div>
+
+    <!-- Blocked Date Info Modal -->
+    <div class="modal" id="blockedInfoModal">
+        <div class="modal-content">
+            <h3 class="modal-title" style="color: var(--warning);">
+                <i class="fas fa-calendar-times"></i> BLOCKED DATE
+            </h3>
+            <p id="blockedInfoMessage" style="margin-bottom: 20px; font-size: 1.1rem; line-height: 1.5;"></p>
+            <button type="button" class="btn-primary" onclick="closeBlockedInfoModal()">OK</button>
+        </div>
     </div>
 
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script>
         // Configuration
-        const scriptURL = "https://script.google.com/macros/s/AKfycbycehH5GfUKtJbB1wmGSCb8Wmx8Z6unUM_OaeKSUh67bH_6obgZgZEF3fkmuIjViy_G/exec";
+        const BOOKING_API = "https://script.google.com/macros/s/AKfycbycehH5GfUKtJbB1wmGSCb8Wmx8Z6unUM_OaeKSUh67bH_6obgZgZEF3fkmuIjViy_G/exec";
+        const BLOCK_API = "https://script.google.com/macros/s/AKfycbykBLoTipqGHregVixPiGFm1yLMiUiwj-fEMMYOCbmYA8GeNSk0dCCiI9ts6U0WyJoMkg/exec";
 
         const pricing = {
             "Silent Yoga Retreat 6D/6N": { "Private": 479 },
@@ -296,223 +830,464 @@
             "Standard Hatha Yoga 7D/7N": 7
         };
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            const retreatSelect = document.getElementById("retreatPackage");
-            const roomSelect = document.getElementById("roomType");
-            const priceDisplay = document.getElementById("priceDisplay");
-            const arrivalInput = document.querySelector('input[name="arrival_date"]');
-            const departureInput = document.querySelector('input[name="departure_date"]');
-            const countryCodeSelect = document.getElementById("countryCode");
-            const phoneNumberInput = document.getElementById("phoneNumber");
-            const phoneHiddenInput = document.getElementById("phone");
+        // State variables
+        let currentYear = new Date().getFullYear();
+        let currentMonth = new Date().getMonth();
+        let blockedDates = [];
+        let selectedStartDate = null;
+        let selectedEndDate = null;
+        let lastBookingData = null;
 
-            // Set minimum date to today
-            const today = new Date().toISOString().split('T')[0];
-            arrivalInput.min = today;
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function () {
+            fetchBlocks();
+            renderCalendar(currentYear, currentMonth);
 
-            // Event listeners
-            retreatSelect.addEventListener("change", function() {
-                updateRoomTypes();
-                updateDepartureDate();
-            });
+            // Add event listeners
+            const retreatSelect = document.getElementById('retreatPackage');
+            const roomSelect = document.getElementById('roomType');
+            const countryCodeSelect = document.getElementById('countryCode');
+            const phoneNumberInput = document.getElementById('phoneNumber');
+            const phoneHiddenInput = document.getElementById('phone');
 
-            roomSelect.addEventListener("change", updatePrice);
-            arrivalInput.addEventListener("change", updateDepartureDate);
-            
-            countryCodeSelect.addEventListener("change", updatePhoneField);
-            phoneNumberInput.addEventListener("input", updatePhoneField);
+            retreatSelect.addEventListener('change', updateRetreatSelection);
+            roomSelect.addEventListener('change', updatePrice);
+            countryCodeSelect.addEventListener('change', updatePhoneField);
+            phoneNumberInput.addEventListener('input', updatePhoneField);
 
             // Form submission
-            document.getElementById("bookingForm").addEventListener("submit", handleBookingSubmit);
+            document.getElementById('bookingForm').addEventListener('submit', handleBookingSubmit);
 
-            function updatePhoneField() {
-                const countryCode = countryCodeSelect.value;
-                const phoneNumber = phoneNumberInput.value.replace(/\D/g, '');
-                if (countryCode && phoneNumber) {
-                    phoneHiddenInput.value = `https://wa.me/${countryCode}${phoneNumber}`;
-                }
-            }
-
-            function updateRoomTypes() {
-                const retreat = retreatSelect.value;
-                roomSelect.innerHTML = "<option value='' disabled selected>Select Room Type</option>";
-                if (pricing[retreat]) {
-                    Object.keys(pricing[retreat]).forEach(rt => {
-                        const opt = document.createElement("option");
-                        opt.value = rt;
-                        opt.textContent = rt;
-                        roomSelect.appendChild(opt);
-                    });
-                }
-                updatePrice();
-            }
-
-            function updatePrice() {
-                const retreat = retreatSelect.value;
-                const room = roomSelect.value;
-                const priceInput = document.getElementById("price");
-                
-                if (pricing[retreat] && pricing[retreat][room]) {
-                    const price = pricing[retreat][room];
-                    priceInput.value = "$" + price;
-                    priceDisplay.textContent = "$" + price;
-                } else {
-                    priceInput.value = "";
-                    priceDisplay.textContent = "$0";
-                }
-            }
-
-            function updateDepartureDate() {
-                const retreat = retreatSelect.value;
-                const nights = retreatDuration[retreat];
-                if (arrivalInput.value && nights) {
-                    const arrival = new Date(arrivalInput.value);
-                    const departure = new Date(arrival);
-                    departure.setDate(arrival.getDate() + nights);
-                    departureInput.value = departure.toISOString().split('T')[0];
-                }
-            }
-
-            async function handleBookingSubmit(e) {
+            // Manual download link
+            document.getElementById('manualDownload').addEventListener('click', function (e) {
                 e.preventDefault();
-                const form = e.target;
-                const bookingCode = Math.floor(1000000 + Math.random() * 9000000);
-
-                const data = {
-                    guest_name: form.guest_name.value,
-                    country: form.country.value,
-                    email: form.email.value,
-                    phone: phoneHiddenInput.value,
-                    package: form.package.value,
-                    room_type: form.room_type.value,
-                    price: document.getElementById("price").value,
-                    arrival_date: form.arrival_date.value,
-                    departure_date: form.departure_date.value,
-                    remarks: form.remarks.value,
-                    booking_code: bookingCode,
-                    timestamp: new Date().toISOString()
-                };
-
-                try {
-                    const submitBtn = form.querySelector('button[type="submit"]');
-                    submitBtn.textContent = "Submitting...";
-                    submitBtn.disabled = true;
-
-                    const response = await fetch(scriptURL, {
-                        method: "POST",
-                        headers: { "Content-Type": "text/plain;charset=UTF-8" },
-                        body: JSON.stringify(data)
-                    });
-
-                    if (response.ok) {
-                        downloadConfirmationAsImage(data);
-                        showSuccessMessage();
-                        form.reset();
-                        roomSelect.innerHTML = "<option value='' disabled selected>Select Room Type</option>";
-                        document.getElementById("price").value = "";
-                        priceDisplay.textContent = "$0";
-                    } else {
-                        throw new Error('Submission failed');
-                    }
-                } catch (error) {
-                    alert('Failed to submit booking. Please try again.');
-                } finally {
-                    const submitBtn = form.querySelector('button[type="submit"]');
-                    submitBtn.textContent = "Submit Booking";
-                    submitBtn.disabled = false;
+                if (lastBookingData) {
+                    downloadConfirmationAsImage(lastBookingData);
                 }
+            });
+        });
+
+        function updatePhoneField() {
+            const countryCode = document.getElementById('countryCode').value;
+            const phoneNumber = document.getElementById('phoneNumber').value.replace(/\D/g, '');
+            if (countryCode && phoneNumber) {
+                document.getElementById('phone').value = `https://wa.me/${countryCode}${phoneNumber}`;
             }
+        }
 
-            function downloadConfirmationAsImage(data) {
-                const confirmationDiv = createStyledConfirmation(data);
-                confirmationDiv.style.position = 'fixed';
-                confirmationDiv.style.left = '50%';
-                confirmationDiv.style.top = '50%';
-                confirmationDiv.style.transform = 'translate(-50%, -50%)';
-                confirmationDiv.style.zIndex = 9999;
-                document.body.appendChild(confirmationDiv);
+        function updateRetreatSelection() {
+            const retreatSelect = document.getElementById('retreatPackage');
+            const selectedRetreat = retreatSelect.value;
+            document.getElementById('selectedRetreat').textContent = selectedRetreat || 'None';
+            updateRoomTypes();
+            updatePrice();
 
-                html2canvas(confirmationDiv, {
-                    scale: 2,
-                    useCORS: true,
-                    logging: false,
-                    backgroundColor: "#FFFFFF"
-                }).then(canvas => {
-                    const link = document.createElement('a');
-                    link.download = 'Sadhana Booking Confirmation.jpg';
-                    link.href = canvas.toDataURL('image/jpeg', 0.92);
-                    link.click();
-                    document.body.removeChild(confirmationDiv);
+            // Clear any previous selection when retreat changes
+            selectedStartDate = null;
+            selectedEndDate = null;
+            document.getElementById('dateInfo').classList.add('hidden');
+            document.getElementById('dateError').classList.add('hidden');
+            renderCalendar(currentYear, currentMonth);
+        }
+
+        function updateRoomTypes() {
+            const retreat = document.getElementById('retreatPackage').value;
+            const roomSelect = document.getElementById('roomType');
+            roomSelect.innerHTML = "<option value='' disabled selected>Select Room Type</option>";
+
+            if (pricing[retreat]) {
+                Object.keys(pricing[retreat]).forEach(rt => {
+                    const opt = document.createElement("option");
+                    opt.value = rt;
+                    opt.textContent = rt;
+                    roomSelect.appendChild(opt);
                 });
             }
+        }
 
-            function createStyledConfirmation(data) {
-                const div = document.createElement('div');
-                div.style.cssText = `
-                    width: 1200px; height: 900px; padding: 40px;
-                    background: linear-gradient(135deg, #f9f7f2 0%, #ffffff 100%);
-                    border: 4px solid #506C4A; border-radius: 20px;
-                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                    color: #192812; display: flex; flex-direction: column;
-                    justify-content: space-between; box-sizing: border-box;
+        function updatePrice() {
+            const retreat = document.getElementById('retreatPackage').value;
+            const room = document.getElementById('roomType').value;
+            const priceInput = document.getElementById('price');
+
+            if (pricing[retreat] && pricing[retreat][room]) {
+                const price = pricing[retreat][room];
+                priceInput.value = "$" + price;
+                document.getElementById('priceDisplay').textContent = "$" + price;
+            } else {
+                priceInput.value = "";
+                document.getElementById('priceDisplay').textContent = "$0";
+            }
+        }
+
+        async function handleBookingSubmit(e) {
+            e.preventDefault();
+
+            // Validate date selection
+            if (!selectedStartDate) {
+                showErrorModal('Please select your arrival date from the calendar');
+                return;
+            }
+
+            const form = e.target;
+            const bookingCode = Math.floor(1000000 + Math.random() * 9000000);
+
+            const data = {
+                guest_name: form.guest_name.value,
+                country: form.country.value,
+                email: form.email.value,
+                phone: document.getElementById('phone').value,
+                package: form.package.value,
+                room_type: form.room_type.value,
+                price: document.getElementById('price').value,
+                arrival_date: selectedStartDate.toISOString().split('T')[0],
+                departure_date: selectedEndDate.toISOString().split('T')[0],
+                remarks: form.remarks.value,
+                booking_code: bookingCode,
+                timestamp: new Date().toISOString()
+            };
+
+            try {
+                const submitBtn = document.getElementById('submitBtn');
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+                submitBtn.disabled = true;
+
+                const response = await fetch(BOOKING_API, {
+                    method: "POST",
+                    headers: { "Content-Type": "text/plain;charset=UTF-8" },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    lastBookingData = data;
+                    downloadConfirmationAsImage(data);
+                    showSuccessModal();
+                } else {
+                    throw new Error('Submission failed');
+                }
+            } catch (error) {
+                showErrorModal('Failed to submit booking. Please try again.');
+            } finally {
+                const submitBtn = document.getElementById('submitBtn');
+                submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Submit Booking';
+                submitBtn.disabled = false;
+            }
+        }
+
+        // Date blocking functions
+        function fetchBlocks() {
+            fetch(BLOCK_API + '?t=' + new Date().getTime())
+                .then(r => r.json())
+                .then(data => {
+                    updateBlockedDates(data);
+                })
+                .catch(err => {
+                    console.error('Error fetching blocked dates:', err);
+                });
+        }
+
+        function updateBlockedDates(data) {
+            blockedDates = [];
+            data.forEach(row => {
+                if (row.Start && row.End) {
+                    let start = new Date(row.Start);
+                    let end = new Date(row.End);
+                    const reason = row.Reason;
+
+                    while (start <= end) {
+                        const dateStr = start.toISOString().split("T")[0];
+                        blockedDates.push({ date: dateStr, reason: reason });
+                        start.setDate(start.getDate() + 1);
+                    }
+                }
+            });
+            renderCalendar(currentYear, currentMonth);
+        }
+
+        function checkDateRangeConflict(startDate, endDate) {
+            const current = new Date(startDate);
+            const conflicts = [];
+
+            while (current <= endDate) {
+                const dateStr = current.toISOString().split('T')[0];
+                const blockedDate = blockedDates.find(b => b.date === dateStr);
+
+                if (blockedDate) {
+                    conflicts.push({
+                        date: dateStr,
+                        reason: blockedDate.reason
+                    });
+                }
+                current.setDate(current.getDate() + 1);
+            }
+
+            return conflicts.length > 0 ? conflicts : null;
+        }
+
+        // Calendar functions
+        function renderCalendar(year, month) {
+            const monthName = new Date(year, month).toLocaleString("default", { month: "long" });
+            document.getElementById("month-year").innerText = `${monthName} ${year}`;
+
+            const calendar = document.getElementById("calendar");
+            calendar.innerHTML = "";
+
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            // Empty boxes before first day
+            for (let i = 0; i < firstDay; i++) {
+                calendar.innerHTML += `<div class="calendar-day empty"></div>`;
+            }
+
+            // Fill days
+            for (let day = 1; day <= daysInMonth; day++) {
+                let dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const blockedDate = blockedDates.find(b => b.date === dateStr);
+                const isBlocked = !!blockedDate;
+
+                let dayClass = "calendar-day";
+                let dateLabelHtml = "";
+
+                if (isBlocked) {
+                    dayClass += " blocked";
+                }
+
+                // Check if this date is in the selected booking range
+                const currentDate = new Date(dateStr);
+                if (selectedStartDate && selectedEndDate) {
+                    if (currentDate.getTime() === selectedStartDate.getTime()) {
+                        dayClass += " start-date";
+                        dateLabelHtml = `<div class="date-label">ARRIVAL</div>`;
+                    } else if (currentDate.getTime() === selectedEndDate.getTime()) {
+                        dayClass += " end-date";
+                        dateLabelHtml = `<div class="date-label">DEPARTURE</div>`;
+                    } else if (currentDate > selectedStartDate && currentDate < selectedEndDate) {
+                        dayClass += " in-range";
+                    }
+                }
+
+                calendar.innerHTML += `
+                    <div class="${dayClass}" data-date="${dateStr}" onclick="selectDate('${dateStr}')">
+                        <div class="day-number">${day}</div>
+                        <div class="day-events">
+                            ${isBlocked ? '<div class="event-dot"></div>' : ''}
+                        </div>
+                        ${dateLabelHtml}
+                    </div>
                 `;
+            }
+        }
+
+        function selectDate(dateStr) {
+            const retreat = document.getElementById('retreatPackage').value;
+            if (!retreat) {
+                showErrorModal('Please select a retreat first');
+                return;
+            }
+
+            // Check if the selected date is blocked
+            const blockedDate = blockedDates.find(b => b.date === dateStr);
+            if (blockedDate) {
+                document.getElementById('blockedInfoMessage').innerHTML =
+                    `The date <strong>${formatDate(dateStr)}</strong> is blocked.<br><br>
+                    <strong>Reason:</strong> ${blockedDate.reason}`;
+                document.getElementById('blockedInfoModal').style.display = 'flex';
+                return;
+            }
+
+            const date = new Date(dateStr);
+            const nights = retreatDuration[retreat];
+
+            // Calculate end date (start date + nights)
+            selectedStartDate = date;
+            selectedEndDate = new Date(date);
+            selectedEndDate.setDate(date.getDate() + nights);
+
+            // Check for conflicts with blocked dates
+            const conflicts = checkDateRangeConflict(selectedStartDate, selectedEndDate);
+
+            if (conflicts) {
+                let errorMessage = "Sorry, the selected dates overlap with blocked dates:<br><br>";
+                conflicts.forEach(conflict => {
+                    errorMessage += `• <strong>${formatDate(conflict.date)}</strong>: ${conflict.reason}<br>`;
+                });
+
+                showErrorModal(errorMessage);
+
+                // Clear the selection
+                selectedStartDate = null;
+                selectedEndDate = null;
+                renderCalendar(currentYear, currentMonth);
+                return;
+            }
+
+            // If no conflicts, proceed with selection
+            document.getElementById('dateError').classList.add('hidden');
+
+            // Update date info display
+            document.getElementById('startDateDisplay').textContent = formatDate(dateStr);
+            document.getElementById('endDateDisplay').textContent = formatDate(selectedEndDate.toISOString().split('T')[0]);
+            document.getElementById('dateInfo').classList.remove('hidden');
+
+            renderCalendar(currentYear, currentMonth);
+        }
+
+        function prevMonth() {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            renderCalendar(currentYear, currentMonth);
+        }
+
+        function nextMonth() {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            renderCalendar(currentYear, currentMonth);
+        }
+
+        // Confirmation generation
+        function downloadConfirmationAsImage(data) {
+            const confirmationDiv = createStyledConfirmation(data);
+            confirmationDiv.style.position = 'fixed';
+            confirmationDiv.style.left = '50%';
+            confirmationDiv.style.top = '50%';
+            confirmationDiv.style.transform = 'translate(-50%, -50%)';
+            confirmationDiv.style.zIndex = 9999;
+            document.body.appendChild(confirmationDiv);
+
+            html2canvas(confirmationDiv, {
+                scale: 2,
+                useCORS: true,
+                logging: false,
+                backgroundColor: "#FFFFFF"
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'Sadhana Booking Confirmation.jpg';
+                link.href = canvas.toDataURL('image/jpeg', 0.92);
+                link.click();
+                document.body.removeChild(confirmationDiv);
+            });
+        }
+
+        function createStyledConfirmation(data) {
+            const div = document.createElement('div');
+            div.style.cssText = `
+                width: 1200px; height: 900px; padding: 40px;
+                background: linear-gradient(135deg, #f9f7f2 0%, #ffffff 100%);
+                border: 4px solid #506C4A; border-radius: 20px;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                color: #192812; display: flex; flex-direction: column;
+                justify-content: space-between; box-sizing: border-box;
+            `;
+
+            div.innerHTML = `
+                <div style="text-align:center;">
+                    <h1 style="font-size: 42px; margin: 0 0 6px 0; color: #506C4A;">Sadhana Yoga Retreat</h1>
+                    <h2 style="font-size: 22px; margin: 0 0 12px 0; color: #8DA399;">Booking Confirmation</h2>
+                </div>
                 
-                div.innerHTML = `
-                    <div style="text-align:center;">
-                        <h1 style="font-size: 42px; margin: 0 0 6px 0; color: #506C4A;">Sadhana Yoga Retreat</h1>
-                        <h2 style="font-size: 22px; margin: 0 0 12px 0; color: #8DA399;">Booking Confirmation</h2>
+                <div style="display:flex; gap:18px;">
+                    <div style="flex:1; padding:12px 16px; border-radius:10px; background:rgba(80,108,74,0.04); border-left:4px solid #506C4A;">
+                        <div style="font-size:14px; color:#506C4A; font-weight:700;">Guest Information</div>
+                        <div style="font-size:18px; margin-top:8px; font-weight:600;">${data.guest_name}</div>
+                        <div style="font-size:14px; margin-top:6px;">${data.country}</div>
+                        <div style="font-size:14px; margin-top:6px;">${data.email}</div>
+                        <div style="font-size:14px; margin-top:6px;">${data.phone}</div>
                     </div>
-                    <div style="display:flex; gap:18px;">
-                        <div style="flex:1; padding:12px 16px; border-radius:10px; background:rgba(80,108,74,0.04); border-left:4px solid #506C4A;">
-                            <div style="font-size:14px; color:#506C4A; font-weight:700;">Guest</div>
-                            <div style="font-size:18px; margin-top:8px; font-weight:600;">${data.guest_name}</div>
-                            <div style="font-size:14px; margin-top:6px;">${data.country}</div>
-                        </div>
-                        <div style="flex:1; padding:12px 16px; border-radius:10px; background:rgba(80,108,74,0.04); border-left:4px solid #506C4A;">
-                            <div style="font-size:14px; color:#506C4A; font-weight:700;">Booking</div>
-                            <div style="font-size:18px; margin-top:8px; font-weight:600;">${data.package}</div>
-                            <div style="font-size:14px; margin-top:6px;">Room: ${data.room_type}</div>
-                        </div>
+                    <div style="flex:1; padding:12px 16px; border-radius:10px; background:rgba(80,108,74,0.04); border-left:4px solid #506C4A;">
+                        <div style="font-size:14px; color:#506C4A; font-weight:700;">Booking Details</div>
+                        <div style="font-size:18px; margin-top:8px; font-weight:600;">${data.package}</div>
+                        <div style="font-size:14px; margin-top:6px;">Room: ${data.room_type}</div>
+                        <div style="font-size:14px; margin-top:6px;">Booking Code: ${data.booking_code}</div>
                     </div>
-                    <div style="display:flex; gap:18px;">
-                        <div style="flex:1; padding:12px 16px; border-radius:10px; background:rgba(201,169,110,0.08); border:2px solid #C9A96E; text-align:center;">
-                            <div style="font-size:14px; color:#666;">Arrival</div>
-                            <div style="font-size:20px; font-weight:700; color:#506C4A; margin-top:6px;">${formatDate(data.arrival_date)} at 3 PM</div>
-                        </div>
-                        <div style="flex:1; padding:12px 16px; border-radius:10px; background:rgba(201,169,110,0.08); border:2px solid #C9A96E; text-align:center;">
-                            <div style="font-size:14px; color:#666;">Departure</div>
-                            <div style="font-size:20px; font-weight:700; color:#506C4A; margin-top:6px;">${formatDate(data.departure_date)} at 11 AM</div>
-                        </div>
+                </div>
+                
+                <div style="display:flex; gap:18px;">
+                    <div style="flex:1; padding:12px 16px; border-radius:10px; background:rgba(201,169,110,0.08); border:2px solid #C9A96E; text-align:center;">
+                        <div style="font-size:14px; color:#666;">Arrival</div>
+                        <div style="font-size:20px; font-weight:700; color:#506C4A; margin-top:6px;">${formatDate(data.arrival_date)} at 3 PM</div>
                     </div>
-                    <div style="text-align:center;">
-                        <div style="font-size:14px; color:#666;">Total Amount</div>
-                        <div style="font-size:36px; font-weight:800; color:#506C4A; margin-top:6px;">${data.price}</div>
-                        <div style="font-size:16px; margin-top:20px; color:#c04a4a; font-weight:700;">Booking Code: ${data.booking_code}</div>
+                    <div style="flex:1; padding:12px 16px; border-radius:10px; background:rgba(201,169,110,0.08); border:2px solid #C9A96E; text-align:center;">
+                        <div style="font-size:14px; color:#666;">Departure</div>
+                        <div style="font-size:20px; font-weight:700; color:#506C4A; margin-top:6px;">${formatDate(data.departure_date)} at 11 AM</div>
                     </div>
-                `;
-                return div;
-            }
+                </div>
+                
+                <div style="padding:12px 16px; border-radius:10px; background:rgba(80,108,74,0.04); border-left:4px solid #506C4A;">
+                    <div style="font-size:14px; color:#506C4A; font-weight:700;">Remarks & Special Requests</div>
+                    <div style="font-size:14px; margin-top:8px;">${data.remarks || 'None'}</div>
+                </div>
+                
+                <div style="text-align:center;">
+                    <div style="font-size:14px; color:#666;">Total Amount</div>
+                    <div style="font-size:36px; font-weight:800; color:#506C4A; margin-top:6px;">${data.price}</div>
+                    <div style="font-size:16px; margin-top:20px; color:#c04a4a; font-weight:700;">Booking Code: ${data.booking_code}</div>
+                </div>
+                
+                <div style="padding:12px 16px; border-radius:10px; background:rgba(80,108,74,0.04); border:1px solid #506C4A;">
+                    <div style="font-size:12px; color:#506C4A; font-weight:700; text-align:center;">IMPORTANT TERMS & CONDITIONS</div>
+                    <div style="font-size:10px; margin-top:8px; line-height:1.4;">
+                        <p><strong>Cancellation Policy:</strong> If a prepaid booking is cancelled, 30% of the total paid amount will be deducted. Bookings with no upfront payment may be cancelled by Sadhana Yoga up to 2 days before arrival, in case of any inconvenience at the retreat. Full payment is required to confirm your booking. In all cases, guests will be informed promptly about any changes or cancellations.</p>
+                        <p style="margin-top:6px;"><strong>Check-in/out:</strong> Check-in at 3 PM on arrival day. Check-out at 11 AM after breakfast on departure day.</p>
+                    </div>
+                </div>
+            `;
+            return div;
+        }
 
-            function formatDate(dateStr) {
-                const d = new Date(dateStr);
-                const day = d.getDate();
-                const daySuffix = day % 10 === 1 && day !== 11 ? "st" : day % 10 === 2 && day !== 12 ? "nd" : day % 10 === 3 && day !== 13 ? "rd" : "th";
-                return `${day}${daySuffix} ${d.toLocaleString('en-US', { month: 'long' })} ${d.getFullYear()}`;
-            }
+        // Modal functions
+        function showSuccessModal() {
+            document.getElementById('successModal').style.display = 'flex';
+        }
 
-            function showSuccessMessage() {
-                const successDiv = document.createElement('div');
-                successDiv.style.cssText = `
-                    padding: 15px; margin: 15px 0; border-radius: 12px;
-                    background: rgba(80, 108, 74, 0.1); color: #506C4A;
-                    border: 1px solid #506C4A; text-align: center;
-                `;
-                successDiv.innerHTML = `<h3>✓ Booking Successfully Submitted!</h3><p>Your confirmation has been downloaded.</p>`;
-                document.getElementById("bookingForm").parentNode.insertBefore(successDiv, document.getElementById("bookingForm").nextSibling);
-                setTimeout(() => successDiv.remove(), 5000);
-            }
-        });
+        function closeSuccessModal() {
+            document.getElementById('successModal').style.display = 'none';
+            document.getElementById('bookingForm').reset();
+            document.getElementById('roomType').innerHTML = "<option value='' disabled selected>Select Room Type</option>";
+            document.getElementById('price').value = "";
+            document.getElementById('priceDisplay').textContent = "$0";
+            selectedStartDate = null;
+            selectedEndDate = null;
+            document.getElementById('dateInfo').classList.add('hidden');
+            renderCalendar(currentYear, currentMonth);
+        }
+
+        function showErrorModal(message) {
+            document.getElementById('errorModalMessage').innerHTML = message;
+            document.getElementById('errorModal').style.display = 'flex';
+        }
+
+        function closeErrorModal() {
+            document.getElementById('errorModal').style.display = 'none';
+        }
+
+        function closeBlockedInfoModal() {
+            document.getElementById('blockedInfoModal').style.display = 'none';
+        }
+
+        function sendWhatsApp() {
+            const phone = "+9779866064463";
+            const message = "Hello! I have booked a retreat at Sadhana Yoga Retreat. Please find my booking confirmation attached.";
+            const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+            window.open(url, '_blank');
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return 'Invalid Date';
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
     </script>
 </body>
+
 </html>
